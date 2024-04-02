@@ -181,15 +181,9 @@ interface GridProps {
   grid: GridCell[][];
   onCellClick: (x: number, y: number) => void;
   peep: boolean;
-  focusedMode: boolean;
 }
 
-const Grid: React.FC<GridProps> = ({
-  grid,
-  onCellClick,
-  peep,
-  focusedMode,
-}) => {
+const Grid: React.FC<GridProps> = ({ grid, onCellClick, peep }) => {
   const findBiggestNumber = (arr: GridCell[][]) => {
     let biggest = 0;
     arr.forEach((row) =>
@@ -211,18 +205,14 @@ const Grid: React.FC<GridProps> = ({
             key={`${x}-${y}`}
             className={`w-16 h-10 flex items-center justify-center ${
               cell.color ? `bg-${cell.color}-400` : "bg-white"
-            } ${
-              focusedMode && cell.probability === findBiggestNumber(grid)
-                ? "border-2 border-red-500"
-                : ""
-            } transition-all duration-150`}
+            }  transition-all duration-150`}
             style={{
               backgroundColor:
                 cell.color && cell.color.length > 0 ? cell.color : "",
             }}
             onClick={() => onCellClick(x, y)}
           >
-            {peep && `${(cell.probability * 100).toFixed(2)}%`}
+            {peep && `${cell.probability.toFixed(2)}`}
           </button>
         ))
       )}
@@ -238,7 +228,6 @@ export default function Home() {
   const router = useRouter();
   const [grid, setGrid] = React.useState<GridCell[][]>(initialGridState());
   const [ghost, setGhost] = React.useState<[number, number]>(placeGhost());
-  const [focusedMode, setFocusedMode] = React.useState<boolean>(false);
   // const [lastClicked, setLastClicked] = React.useState<[number, number]>();
   const [lastClicked, setLastClicked] = React.useState<[number, number]>([
     0, 0,
@@ -326,23 +315,8 @@ export default function Home() {
             </p>
           </div>
           <div className="flex flex-col gap-4">
-            <Grid
-              grid={grid}
-              onCellClick={handleCellClick}
-              peep={peep}
-              focusedMode={focusedMode}
-            />
-            <div>
-              <button
-                style={{ boxShadow: "0 0 50px 0 rgba(37,99,235,0.2)" }}
-                className="z-40 bg-gradient-to-br from-fuchsia-500 to-fuchsia-800 text-center text-white px-4 py-2 rounded-lg min-w-fit hover:brightness-95 transition-all duration-150"
-                onClick={() => {
-                  setFocusedMode(!focusedMode);
-                }}
-              >
-                Focused mode
-              </button>
-            </div>
+            <Grid grid={grid} onCellClick={handleCellClick} peep={peep} />
+            <div></div>
           </div>
         </div>
       </div>
